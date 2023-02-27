@@ -12,9 +12,10 @@
 🗿 Where to find me AggressiveUser@OutLook.com
 
 ## 🧩 HackTheBox  
-✨ Ownership Rank: Guru
-<img src="https://www.fg-a.com/flags/india-flag-large.jpg" alt="AggressiveUser" width=20> Country Rank: India #2 
-🌍 Global Rank: TOP 50 
+- ✨ Ownership Rank: Guru
+- <img src="https://www.fg-a.com/flags/india-flag-large.jpg" alt="AggressiveUser" width=20> Country Rank: India #2 
+- 🌍 Global Rank: TOP 50 
+
 [![HackTheBox Badge](https://www.hackthebox.eu/badge/image/17569)](https://www.hackthebox.eu/profile/17569)
 
 ## 💻 Projects
