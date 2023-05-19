@@ -7,12 +7,10 @@ https://github.com/1dayluo/My-Nuclei-Templates
 https://github.com/1in9e/my-nuclei-templates
 https://github.com/5cr1pt/templates
 https://github.com/ARPSyndicate/kenzer-templates
-https://github.com/Aituglo/nuclei-templates
 https://github.com/Akokonunes/Private-Nuclei-Templates
 https://github.com/Arvinthksrct/alltemplate
 https://github.com/AshiqurEmon/nuclei_templates.git
 https://github.com/CharanRayudu/Custom-Nuclei-Templates
-https://github.com/ChiaraNRTT96/BountySkill
 https://github.com/DoubleTakes/nuclei-templates
 https://github.com/Elsfa7-110/mynuclei-templates
 https://github.com/ExpLangcn/NucleiTP
@@ -22,11 +20,9 @@ https://github.com/Jagomeiister/nuclei-templates
 https://github.com/JoshMorrison99/url-based-nuclei-templates
 https://github.com/Kaue-Navarro/Templates-kaue-nuclei
 https://github.com/KeepHowling/all_freaking_nuclei_templates
-https://github.com/Linuxinet/nuclei-templates
 https://github.com/Lopseg/nuclei-c-templates
 https://github.com/MR-pentestGuy/nuclei-templates
 https://github.com/NightRang3r/misc_nuclei_templates
-https://github.com/Nithissh0708/Custom-Nuclei-Templates
 https://github.com/NitinYadav00/My-Nuclei-Templates
 https://github.com/Odayex/Random-Nuclei-Templates
 https://github.com/PedroFerreira97/nuclei_templates
@@ -38,7 +34,6 @@ https://github.com/SirAppSec/nuclei-template-generator-log4j
 https://github.com/Str1am/my-nuclei-templates
 https://github.com/SumedhDawadi/Custom-Nuclei-Template
 https://github.com/System00-Security/backflow
-https://github.com/abbycantcode/Nuclei-Template
 https://github.com/adampielak/nuclei-templates
 https://github.com/aels/CVE-2022-37042
 https://github.com/alexrydzak/rydzak-nuclei-templates
@@ -60,13 +55,11 @@ https://github.com/ekinsb/Nuclei-Templates
 https://github.com/erickfernandox/nuclei-templates
 https://github.com/esetal/nuclei-bb-templates
 https://github.com/ethicalhackingplayground/erebus-templates
-https://github.com/foulenzer/foulenzer-templates
 https://github.com/geeknik/nuclei-templates-1
 https://github.com/geeknik/the-nuclei-templates
 https://github.com/glyptho/templatesallnuclei
 https://github.com/im403/nuclei-temp
 https://github.com/javaongsan/nuclei-templates
-https://github.com/joanbono/nuclei-templates
 https://github.com/justmumu/SpringShell
 https://github.com/kabilan1290/templates
 https://github.com/kh4sh3i/CVE-2022-23131
@@ -80,7 +73,6 @@ https://github.com/notnotnotveg/nuclei-custom-templates
 https://github.com/obreinx/nuceli-templates
 https://github.com/optiv/mobile-nuclei-templates
 https://github.com/p0ch4t/nuclei-special-templates
-https://github.com/pacho15/mynuclei_templates
 https://github.com/panch0r3d/nuclei-templates
 https://github.com/peanuth8r/Nuclei_Templates
 https://github.com/pentest-dev/Profesional-Nuclei-Templates
@@ -110,8 +102,6 @@ https://github.com/th3r4id/nuclei-templates
 https://github.com/thebrnwal/Content-Injection-Nuclei-Script
 https://github.com/thecyberneh/nuclei-templatess
 https://github.com/thelabda/nuclei-templates
-https://github.com/themastersunil/Nuclei-TamplatesBackup.git
-https://github.com/themastersunil/nucleiDB
 https://github.com/themoonbaba/private_templates
 https://github.com/topscoder/nuclei-wordfence-cve
 https://github.com/toramanemre/apache-solr-log4j-CVE-2021-44228
