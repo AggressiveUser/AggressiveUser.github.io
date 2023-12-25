@@ -1,0 +1,115 @@
+<!-- Simbba Maarega Bhosdike -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F5 Big-IP Cookie Decoder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #333;
+      color: #fff;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .description {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .example {
+      font-style: italic;
+      margin-bottom: 15px;
+    }
+
+    .input-section {
+      margin-bottom: 30px;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 8px 20px;
+      background-color: #009688;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #00796b;
+    }
+
+    .result {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>F5 Big-IP Cookie Decoder <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f9/F5_Networks_logo.svg/1200px-F5_Networks_logo.svg.png" width=28></h1>
+    <p class="description">
+      This tool decodes Big-IP persistence cookies, allowing you to determine the internal IP address(es) of a load-balanced web server.
+    </p>
+    <p class="example">
+      Example: BIGipServerMEOW=1677787402.36895.0000
+    </p>
+    <div class="input-section">
+      <label for="input">Enter Cookie:</label>
+      <input type="text" id="input" placeholder="Enter your cookie" autocomplete="off">
+      <button onclick="decodeCookie()">Decode</button>
+    </div>
+    <div id="result" class="result"></div><br>
+    <footer>
+      Developed by AggressiveUser💀</a>
+    </footer>
+    <script>
+      function decodeCookie() {
+        var input = document.getElementById('input').value;
+
+        // Perform decryption logic
+        var result = decodeCookieLogic(input);
+
+        // Display the result
+        document.getElementById('result').innerHTML = result;
+      }
+
+      function decodeCookieLogic(cookie) {
+        var cookieParts = cookie.split('=');
+        var pool = /^BIGipServer([.\w\.]*)/.exec(cookieParts[0]);
+
+        var cookieValue = cookieParts[1];
+        var [host, port, end] = cookieValue.split('.');
+
+        var [a, b, c, d] = new Uint8Array(new Uint32Array([parseInt(host)]).buffer);
+        var e = new Uint8Array(new Uint16Array([parseInt(port)]).buffer);
+        var portHex = "0x" + e[0].toString(16).padStart(2, '0') + e[1].toString(16).padStart(2, '0');
+
+        var decodedIP = [a, b, c, d].join('.');
+        var decodedPort = parseInt(portHex, 16);
+
+        return `Pool name: ${pool ? pool[1] : 'N/A'}<br>Decoded IP and Port: ${decodedIP}:${decodedPort}`;
+      }
+    </script>
+  </div>
+</body>
+</html>
