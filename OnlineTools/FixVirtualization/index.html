@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixing Virtualization / VT Service on Windows 10/11</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #f0f0f0;
+        }
+
+        h2 {
+            color: #f0f0f0;
+        }
+
+        code {
+            background-color: #2a2a2a;
+            color: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .note {
+            background-color: #333;
+            color: #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Fixing Virtualization / VT Service on Windows 10/11</h1>
+
+    <h2>👉 Method 1</h2>
+    <ol>
+        <li>Press the <code>Windows key</code> and search for <strong>"Turn Windows features on or off"</strong>.</li>
+        <li>Check the <strong>"Virtual Machine Platform"</strong> option.</li>
+        <li>Uncheck the <strong>"Hyper-V"</strong> option.</li>
+        <li>Uncheck the <strong>"Windows Hypervisor Platform"</strong> option.</li>
+    </ol>
+    <img src="https://i.stack.imgur.com/eXaxj.jpg" alt="Enable Virtualization">
+
+    <p>Click <strong>OK</strong> to save the changes and reboot your system.</p>
+    <div class="note">
+        <p>Note: Ensure that CPU virtualization or VT Service is enabled in your BIOS settings.</p>
+    </div>
+
+    <h2>👉 Method 2</h2>
+    <ol>
+        <li>Open Command Prompt as an Administrator.</li>
+        <li>Type <code>bcdedit</code> and locate <strong>hypervisorlaunchtype</strong> at the bottom.</li>
+    </ol>
+    <img src="https://i.ibb.co/hFQzFV3/image.png" alt="CMD Screenshot">
+
+    <p>To disable <strong>hypervisorlaunchtype</strong>, enter <code>bcdedit /set hypervisorlaunchtype off</code> in CMD.</p>
+    <p>Restart your system and enjoy!</p>
+    <div class="note">
+        <p>Note: Ensure that CPU virtualization or VT Service is enabled in your BIOS settings.</p>
+    </div>
+</body>
+
+</html>
