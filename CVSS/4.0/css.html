@@ -18,22 +18,6 @@ body{
   overflow:hidden;
 }
 
-/* 💗 Floating hearts */
-.heart{
-  position:fixed;
-  bottom:-40px;
-  font-size:28px;
-  opacity:.85;
-  animation:floatUp linear forwards;
-  pointer-events:none;
-  z-index:0;
-}
-
-@keyframes floatUp{
-  from{transform:translateY(0)}
-  to{transform:translateY(-110vh) scale(1.6);opacity:0}
-}
-
 .container{
   background:#fff;
   border-radius:30px;
@@ -42,27 +26,20 @@ body{
   width:100%;
   text-align:center;
   box-shadow:0 25px 70px rgba(255,105,180,.35);
-  position:relative;
-  z-index:1;
 }
 
 .hero-gif{
   width:100%;
   max-width:300px;
-  margin:0 auto 20px;
-  border-radius:20px;
-  box-shadow:0 10px 25px rgba(255,105,180,.3);
-}
-
-h1{
-  font-size:30px;
-  color:#ff1493;
   margin-bottom:18px;
+  border-radius:20px;
 }
 
-/* 🎀 Cute music button */
+h1{font-size:30px;color:#ff1493;margin-bottom:10px}
+h4{font-size:20px;color:#ff1493;margin-bottom:10px}
+
+/* 🎶 Music */
 .music-btn{
-  display:inline-block;
   margin-bottom:18px;
   padding:12px 22px;
   border-radius:30px;
@@ -70,144 +47,224 @@ h1{
   color:#fff;
   font-weight:700;
   cursor:pointer;
-  box-shadow:0 6px 18px rgba(255,105,180,.4);
-  transition:.25s;
-  animation:pulse 2s infinite;
 }
 
-.music-btn:hover{
-  background:#ff1493;
-  transform:scale(1.08);
-}
-
-@keyframes pulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.06)}
-  100%{transform:scale(1)}
-}
-
+/* 💗 Normal layout */
 .buttons{
   display:flex;
   justify-content:center;
-  gap:20px;
+  gap:30px;
   margin-top:15px;
-  min-height:90px;
 }
 
-button{
+/* YES */
+.yes{
+  background:#ff1493;
+  color:#fff;
   padding:16px 45px;
-  font-size:18px;
   border:none;
   border-radius:30px;
+  font-size:18px;
   font-weight:700;
   cursor:pointer;
+  transition: transform .45s ease;
 }
 
-.yes{background:#ff1493;color:#fff}
-.no{background:#eee;color:#666}
-.no.moving{position:fixed}
+/* NO — smooth movement */
+.no{
+  background:#eee;
+  color:#666;
+  padding:16px 45px;
+  border:none;
+  border-radius:30px;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
 
-.note{margin-top:12px;font-size:14px;color:#777}
+  transition:
+    left .6s cubic-bezier(.22,1,.36,1),
+    top .6s cubic-bezier(.22,1,.36,1),
+    transform .45s ease;
+}
 
-.success{display:none}
-.success h2{font-size:34px;color:#ff1493;margin-bottom:15px}
-.success p{font-size:18px;color:#555}
+.note{margin-top:15px;color:#777;font-size:15px}
+
+.success{display:none;text-align:center}
+.success h2{font-size:42px;color:#ff1493;margin-bottom:10px}
+.success p{font-size:20px;color:#555}
+
+/* 💗 Floating hearts */
+.heart{
+  position:fixed;
+  bottom:-40px;
+  font-size:28px;
+  animation:floatUp linear forwards;
+  pointer-events:none;
+}
+@keyframes floatUp{
+  to{transform:translateY(-110vh);opacity:0}
+}
+
+/* 💥 Shake */
+@keyframes shake{
+  0%{transform:translate(0,0)}
+  20%{transform:translate(-10px,8px)}
+  40%{transform:translate(10px,-8px)}
+  60%{transform:translate(-8px,6px)}
+  80%{transform:translate(8px,-6px)}
+  100%{transform:translate(0,0)}
+}
+.shake{animation:shake .5s}
 </style>
 </head>
 
 <body>
 
-<!-- 🎶 LOCAL MUSIC -->
 <audio id="bgMusic" loop>
   <source src="https://aggressiveuser.github.io/CVSS/4.0/apna.mp3" type="audio/mpeg">
 </audio>
 
 <div class="container">
 
-  <div id="proposal">
+<div id="proposal">
 
-    <img class="hero-gif"
-    src="https://www.gif-vif.com/trending/valentines-cats-kawaii-art-tjljhdvp3ijnec4u.gif">
+<img class="hero-gif"
+src="https://www.gif-vif.com/trending/valentines-cats-kawaii-art-tjljhdvp3ijnec4u.gif">
 
-    <h1>Sweety 💖<br>Will you be my Valentine?</h1>
+<h1>Sweety 💖</h1><br><h4>Will you be my Valentine?</h4>
 
-    <!-- 🎀 PLAY BUTTON -->
-    <div id="musicBtn" class="music-btn">
-      🎶 Click here — play a song for you 💗
-    </div>
+<div id="musicBtn" class="music-btn">
+🎶 Play our song 💗
+</div>
 
-    <div class="buttons">
-      <button class="yes" id="yesBtn">YES 💘</button>
-      <button class="no" id="noBtn">No 🙈</button>
-    </div>
+<!-- NORMAL BUTTONS -->
+<div class="buttons">
+  <button class="yes" id="yesBtn">YES 💘</button>
+  <button class="no" id="noBtn">No 🙈</button>
+</div>
 
-    <p class="note">The "No" button looks shy 😈</p>
+<br><br>
+<p id="tease" class="note">Choose wisely 😈</p>
 
-  </div>
+</div>
 
-  <div class="success" id="success">
+<div class="success" id="success">
 
-    <img class="hero-gif"
-    src="https://media.giphy.com/media/KmxmoHUGPDjfQXqGgv/giphy.gif">
+<img class="hero-gif"
+src="https://media.giphy.com/media/KmxmoHUGPDjfQXqGgv/giphy.gif">
 
-    <h2>YAYYY 💖</h2>
-    <p>AggressiveUser will be soooo happy 🥰</p>
+<h2>💍 SHE SAID YES 💖</h2>
+<p>You just made AggressiveUser the happiest 🥰</p>
 
-  </div>
+</div>
 
 </div>
 
 <script>
 
-/* 🎶 PLAY LOCAL SONG */
-const music = document.getElementById("bgMusic");
-const musicBtn = document.getElementById("musicBtn");
-
-musicBtn.onclick = () => {
-  music.volume = 0.7;
-  music.play();
-  musicBtn.textContent = "💗 Playing for you 🎶";
-  musicBtn.style.background = "#ff1493";
-};
-
+/* 🎶 Music */
+musicBtn.onclick=()=>bgMusic.play();
 
 /* 💗 Floating hearts */
 const hearts=["💗","💖","💘","💝","💞","💓"];
-
 setInterval(()=>{
-  const heart=document.createElement("div");
-  heart.className="heart";
-  heart.textContent=hearts[Math.floor(Math.random()*hearts.length)];
-  heart.style.left=Math.random()*100+"vw";
-  heart.style.fontSize=(20+Math.random()*25)+"px";
-  heart.style.animationDuration=(4+Math.random()*4)+"s";
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),8000);
+  const h=document.createElement("div");
+  h.className="heart";
+  h.textContent=hearts[Math.random()*hearts.length|0];
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=(20+Math.random()*25)+"px";
+  h.style.animationDuration=(4+Math.random()*4)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),8000);
 },350);
 
 
-/* 😈 Move NO button */
+/* 😈 CHAOS ENGINE */
+
 const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+const tease=document.getElementById("tease");
+const proposal=document.getElementById("proposal");
+const success=document.getElementById("success");
+const container=document.querySelector(".container");
 
-noBtn.addEventListener("mouseenter",moveButton);
-noBtn.addEventListener("touchstart",e=>{
-  e.preventDefault();
-  moveButton();
-});
+let activated=false;
+let level=0;
 
-function moveButton(){
-  noBtn.classList.add("moving");
-  const w=window.innerWidth-noBtn.offsetWidth;
-  const h=window.innerHeight-noBtn.offsetHeight;
-  noBtn.style.left=Math.random()*w+"px";
-  noBtn.style.top=Math.random()*h+"px";
+const msgs=[
+"Nice try 😏",
+"Too slow 💕",
+"Catch me 😈",
+"Never 😈",
+"Say YES 💖"
+];
+
+function activateChaos(e){
+
+  if(!activated){
+    activated=true;
+
+    const rect=noBtn.getBoundingClientRect();
+
+    noBtn.style.position="fixed";
+    noBtn.style.left=rect.left+"px";
+    noBtn.style.top=rect.top+"px";
+    noBtn.style.zIndex=9999;
+  }
+
+  level++;
+
+  const padding=10;
+  const maxX=window.innerWidth-noBtn.offsetWidth-padding;
+  const maxY=window.innerHeight-noBtn.offsetHeight-padding;
+
+  let x,y;
+
+  if(e){
+    x = e.clientX < window.innerWidth/2
+        ? Math.random()*(maxX/2)+maxX/2
+        : Math.random()*(maxX/2);
+
+    y = e.clientY < window.innerHeight/2
+        ? Math.random()*(maxY/2)+maxY/2
+        : Math.random()*(maxY/2);
+  }else{
+    x = Math.random()*maxX;
+    y = Math.random()*maxY;
+  }
+
+  noBtn.style.left = x+"px";
+  noBtn.style.top  = y+"px";
+
+  noBtn.style.transform=`scale(${Math.max(.7,1-level*.03)})`;
+  yesBtn.style.transform=`scale(${1+level*.04})`;
+
+  tease.textContent=msgs[Math.random()*msgs.length|0];
 }
 
+/* 💥 HOVER = SHAKE + ESCAPE */
+noBtn.addEventListener("mouseenter",(e)=>{
 
-/* 💖 YES click */
-document.getElementById("yesBtn").onclick=()=>{
-  document.getElementById("proposal").style.display="none";
-  document.getElementById("success").style.display="block";
+  container.classList.add("shake");
+  setTimeout(()=>container.classList.remove("shake"),500);
+
+  activateChaos(e);
+});
+
+/* 💥 CLICK = EXTRA PUNISHMENT */
+noBtn.addEventListener("click",e=>{
+  e.preventDefault();
+
+  container.classList.add("shake");
+  setTimeout(()=>container.classList.remove("shake"),500);
+
+  activateChaos(e);
+});
+
+/* 💘 YES */
+yesBtn.onclick=()=>{
+  proposal.style.display="none";
+  success.style.display="block";
 };
 
 </script>
