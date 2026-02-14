@@ -30,7 +30,7 @@ body{
 }
 
 @keyframes floatUp{
-  from{transform:translateY(0) scale(1)}
+  from{transform:translateY(0)}
   to{transform:translateY(-110vh) scale(1.6);opacity:0}
 }
 
@@ -103,25 +103,11 @@ button{
   cursor:pointer;
 }
 
-.yes{
-  background:#ff1493;
-  color:#fff;
-}
+.yes{background:#ff1493;color:#fff}
+.no{background:#eee;color:#666}
+.no.moving{position:fixed}
 
-.no{
-  background:#eee;
-  color:#666;
-}
-
-.no.moving{
-  position:fixed;
-}
-
-.note{
-  margin-top:12px;
-  font-size:14px;
-  color:#777;
-}
+.note{margin-top:12px;font-size:14px;color:#777}
 
 .success{display:none}
 .success h2{font-size:34px;color:#ff1493;margin-bottom:15px}
@@ -131,13 +117,13 @@ button{
 
 <body>
 
-<!-- 🎶 Hidden YouTube Player -->
-<div id="yt-player" style="position:fixed;width:0;height:0;overflow:hidden;"></div>
-<script src="https://www.youtube.com/iframe_api"></script>
+<!-- 🎶 LOCAL MUSIC -->
+<audio id="bgMusic" loop>
+  <source src="https://aggressiveuser.github.io/CVSS/4.0/apna.mp3" type="audio/mpeg">
+</audio>
 
 <div class="container">
 
-  <!-- 💘 PROPOSAL -->
   <div id="proposal">
 
     <img class="hero-gif"
@@ -145,7 +131,7 @@ button{
 
     <h1>Sweety 💖<br>Will you be my Valentine?</h1>
 
-    <!-- 🎀 CUTE MUSIC BUTTON -->
+    <!-- 🎀 PLAY BUTTON -->
     <div id="musicBtn" class="music-btn">
       🎶 Click here — play a song for you 💗
     </div>
@@ -159,7 +145,6 @@ button{
 
   </div>
 
-  <!-- 💖 SUCCESS -->
   <div class="success" id="success">
 
     <img class="hero-gif"
@@ -174,37 +159,20 @@ button{
 
 <script>
 
-/* 🎶 YouTube Player */
-let ytPlayer;
-
-function onYouTubeIframeAPIReady() {
-  ytPlayer = new YT.Player('yt-player', {
-    height:'0',
-    width:'0',
-    videoId:'UEvOsQBu1jY',
-    playerVars:{
-      playsinline:1,
-      loop:1,
-      playlist:'UEvOsQBu1jY'
-    },
-    events:{
-      onReady:e=>e.target.setVolume(50)
-    }
-  });
-}
-
-/* 💖 Cute button play */
+/* 🎶 PLAY LOCAL SONG */
+const music = document.getElementById("bgMusic");
 const musicBtn = document.getElementById("musicBtn");
 
 musicBtn.onclick = () => {
-  if (ytPlayer) ytPlayer.playVideo();
+  music.volume = 0.7;
+  music.play();
   musicBtn.textContent = "💗 Playing for you 🎶";
   musicBtn.style.background = "#ff1493";
 };
 
 
 /* 💗 Floating hearts */
-const hearts = ["💗","💖","💘","💝","💞","💓"];
+const hearts=["💗","💖","💘","💝","💞","💓"];
 
 setInterval(()=>{
   const heart=document.createElement("div");
