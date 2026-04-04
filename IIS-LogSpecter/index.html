@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IIS-LogSpecter 🔍 - IIS Log Analysis Tool</title>
+  <style>
+    body { font-family: Arial; margin: 20px; background:#0f172a; color:#e2e8f0; }
+    h1 { color:#38bdf8; }
+    .card { background:#1e293b; padding:15px; border-radius:10px; margin-top:20px; }
+
+    .drop-zone { border: 2px dashed #38bdf8; padding: 40px; text-align: center; border-radius: 10px; margin-top: 20px; cursor: pointer; }
+    .drop-zone.dragover { background: #1e293b; }
+
+    .search-box { margin-top:20px; padding:10px; width:100%; border-radius:8px; border:none; outline:none; font-size:14px; }
+
+    .filters { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; }
+    select, button { padding:8px; border-radius:6px; border:none; cursor:pointer; }
+
+    .table-wrapper { overflow-x: auto; margin-top:20px; }
+    table { border-collapse: collapse; min-width: 1200px; width: 100%; }
+    th, td { border: 1px solid #334155; padding: 6px; text-align:left; font-size:12px; max-width: 220px; }
+    th { background:#1e293b; position: sticky; top: 0; z-index: 1; }
+
+    .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; display: block; }
+    td:hover { background:#334155; }
+
+    .clickable { cursor: pointer; text-decoration: underline dotted; }
+
+    .badge { padding:2px 6px; border-radius:6px; font-size:11px; }
+    .status-200 { background:#065f46; }
+    .status-401 { background:#7c2d12; }
+    .status-500 { background:#7f1d1d; }
+  </style>
+</head>
+<body>
+
+<h1></h1>
+<pre style="color:#38bdf8; font-family:monospace; font-size:12px;">
+.___.___  _________         .____                  _________                     __                
+|   |   |/   _____/         |    |    ____   ____ /   _____/_____   ____   _____/  |_  ___________ 
+|   |   |\_____  \   ______ |    |   /  _ \ / ___\\_____  \\____ \_/ __ \_/ ___\   __\/ __ \_  __ \
+|   |   |/        \ /_____/ |    |__(  <_> ) /_/  >        \  |_> >  ___/\  \___|  | \  ___/|  | \/
+|___|___/_______  /         |_______ \____/\___  /_______  /   __/ \___  >\___  >__|  \___  >__|   
+                \/                  \/    /_____/        \/|__|        \/     \/          \/       
+IIS Log Analysis Tool 							     Author: AggressiveUser</pre>
+
+<div id="dropZone" class="drop-zone">
+  Drag & Drop IIS Log File Here OR Click to Upload
+  <input type="file" id="fileInput" style="display:none" />
+</div>
+
+<input type="text" id="searchInput" class="search-box" placeholder="🔍 Search..." />
+
+<div class="filters">
+  <select id="ipFilter"><option value="">All IPs</option></select>
+  <select id="statusFilter"><option value="">All Status</option></select>
+  <select id="methodFilter"><option value="">All Methods</option></select>
+  <button id="resetBtn">Reset Filters</button>
+</div>
+
+<div id="tableContainer"></div>
+
+<script>
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+const searchInput = document.getElementById("searchInput");
+const ipFilter = document.getElementById("ipFilter");
+const statusFilter = document.getElementById("statusFilter");
+const methodFilter = document.getElementById("methodFilter");
+const resetBtn = document.getElementById("resetBtn");
+
+let globalLogs = [];
+
+// Upload handlers
+ dropZone.addEventListener("click", () => fileInput.click());
+["dragenter","dragover"].forEach(evt => dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.add("dragover"); }));
+["dragleave","drop"].forEach(evt => dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.remove("dragover"); }));
+ dropZone.addEventListener("drop", e => handleFile(e.dataTransfer.files[0]));
+ fileInput.addEventListener("change", e => handleFile(e.target.files[0]));
+
+function parseLog(text) {
+  const lines = text.split("\n");
+  let fields = [], data = [];
+  lines.forEach(line => {
+    if (line.startsWith("#Fields:")) fields = line.replace("#Fields: ", "").split(" ");
+    else if (!line.startsWith("#") && line.trim() !== "") {
+      const values = line.split(" ");
+      if (values.length === fields.length) {
+        let obj = {}; fields.forEach((f,i)=>obj[f]=values[i]); data.push(obj);
+      }
+    }
+  });
+  return data;
+}
+
+function unique(arr){ return [...new Set(arr.filter(Boolean))]; }
+
+// 🔁 Dynamic filter population based on CURRENT filtered set (excluding its own constraint)
+function refreshFilters(baseLogs){
+  const ips = unique(baseLogs.map(l=>l['c-ip']));
+  const statuses = unique(baseLogs.map(l=>l['sc-status']));
+  const methods = unique(baseLogs.map(l=>l['cs-method'] || l['method']));
+
+  setOptions(ipFilter, ips, 'All IPs');
+  setOptions(statusFilter, statuses, 'All Status');
+  setOptions(methodFilter, methods, 'All Methods');
+}
+
+function setOptions(selectEl, values, label){
+  const current = selectEl.value;
+  selectEl.innerHTML = `<option value="">${label}</option>` + values.map(v=>`<option value="${v}">${v}</option>`).join('');
+  // keep previous selection if still valid
+  if (values.includes(current)) selectEl.value = current; else selectEl.value = '';
+}
+
+function formatCell(val, col) {
+  if (!val) return "";
+  if (col === 'sc-status') return `<span class="badge status-${val} clickable" data-col="sc-status" data-val="${val}">${val}</span>`;
+  let extra = (val.includes("../") || val.includes("<script>") || val.includes("' OR")) ? "color:red;" : "";
+
+  // clickable for IP and method and URL
+  if (col === 'c-ip' || col === 'cs-method' || col === 'cs-uri-stem'){
+    return `<span class="truncate clickable" title="${val}" data-col="${col}" data-val="${val}" style="${extra}">${val}</span>`;
+  }
+
+  return `<span class="truncate" title="${val}" style="${extra}">${val}</span>`;
+}
+
+function renderTable(logs) {
+  if(!logs.length) return;
+  const columns = Object.keys(logs[0]);
+  let html = "<div class='card table-wrapper'><table><thead><tr>";
+  columns.forEach(col => html += `<th>${col}</th>`);
+  html += "</tr></thead><tbody>";
+  logs.slice(0,1000).forEach(row => {
+    html += "<tr>";
+    columns.forEach(col => html += `<td>${formatCell(row[col]||'',col)}</td>`);
+    html += "</tr>";
+  });
+  html += "</tbody></table></div>";
+  document.getElementById("tableContainer").innerHTML = html;
+
+  attachClickToFilter();
+}
+
+function applyFilters(){
+  const q = searchInput.value.toLowerCase();
+  const ip = ipFilter.value;
+  const status = statusFilter.value;
+  const method = methodFilter.value;
+
+  const filtered = globalLogs.filter(row => {
+    const matchSearch = Object.values(row).some(v => v && v.toLowerCase().includes(q));
+    const matchIP = !ip || row['c-ip'] === ip;
+    const matchStatus = !status || row['sc-status'] === status;
+    const matchMethod = !method || (row['cs-method'] === method || row['method'] === method);
+    return matchSearch && matchIP && matchStatus && matchMethod;
+  });
+
+  // 🔁 Update dropdown options based on the filtered set (smart/dynamic)
+  // But for each dropdown, compute base set excluding its own constraint to avoid locking
+  const baseForIP = globalLogs.filter(row => {
+    const matchSearch = Object.values(row).some(v => v && v.toLowerCase().includes(q));
+    const matchStatus = !status || row['sc-status'] === status;
+    const matchMethod = !method || (row['cs-method'] === method || row['method'] === method);
+    return matchSearch && matchStatus && matchMethod;
+  });
+
+  const baseForStatus = globalLogs.filter(row => {
+    const matchSearch = Object.values(row).some(v => v && v.toLowerCase().includes(q));
+    const matchIP = !ip || row['c-ip'] === ip;
+    const matchMethod = !method || (row['cs-method'] === method || row['method'] === method);
+    return matchSearch && matchIP && matchMethod;
+  });
+
+  const baseForMethod = globalLogs.filter(row => {
+    const matchSearch = Object.values(row).some(v => v && v.toLowerCase().includes(q));
+    const matchIP = !ip || row['c-ip'] === ip;
+    const matchStatus = !status || row['sc-status'] === status;
+    return matchSearch && matchIP && matchStatus;
+  });
+
+  setOptions(ipFilter, unique(baseForIP.map(l=>l['c-ip'])), 'All IPs');
+  setOptions(statusFilter, unique(baseForStatus.map(l=>l['sc-status'])), 'All Status');
+  setOptions(methodFilter, unique(baseForMethod.map(l=>l['cs-method'] || l['method'])), 'All Methods');
+
+  renderTable(filtered);
+}
+
+function attachClickToFilter(){
+  document.querySelectorAll('.clickable').forEach(el => {
+    el.addEventListener('click', (e) => {
+      const col = el.getAttribute('data-col');
+      const val = el.getAttribute('data-val');
+
+      if (col === 'c-ip') ipFilter.value = val;
+      if (col === 'sc-status') statusFilter.value = val;
+      if (col === 'cs-method') methodFilter.value = val;
+
+      applyFilters();
+    });
+  });
+}
+
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = function() {
+    globalLogs = parseLog(reader.result);
+    refreshFilters(globalLogs); // initial fill
+    renderTable(globalLogs);
+  };
+  reader.readAsText(file);
+}
+
+resetBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  ipFilter.value = "";
+  statusFilter.value = "";
+  methodFilter.value = "";
+  refreshFilters(globalLogs);
+  renderTable(globalLogs);
+});
+
+searchInput.addEventListener("input", applyFilters);
+ipFilter.addEventListener("change", applyFilters);
+statusFilter.addEventListener("change", applyFilters);
+methodFilter.addEventListener("change", applyFilters);
+
+</script>
+
+
+
+<footer style="margin-top:30px; padding:15px; text-align:center; border-top:1px solid #334155; color:#94a3b8; font-size:12px;">
+  <div>
+    <b>IIS-LogSpecter 🔍 </b> — IIS Log Analysis Tool
+  </div>
+  <div style="margin-top:5px;">
+    Created by <b>Chetanya Sharma</b> (AggressiveUser)
+  </div>
+  <div style="margin-top:5px;">
+    GitHub: <a href="https://github.com/AggressiveUser" target="_blank" style="color:#38bdf8; text-decoration:none;">AggressiveUser</a>
+  </div>
+</footer>
+
+</body>
+</html>
